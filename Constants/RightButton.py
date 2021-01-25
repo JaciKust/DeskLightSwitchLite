@@ -1,0 +1,6 @@
+RED_PIN = 4
+GREEN_PIN = 17
+BLUE_PIN = 18
+
+TRIGGER_PIN = 27
+NAME = 'DeskRight'
