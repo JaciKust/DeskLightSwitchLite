@@ -1,6 +1,6 @@
 class Toggleable:
     def __init__(self):
-    _is_on = False
+        _is_on = False
 
     def _execute_set_on(self):
         pass
@@ -14,7 +14,6 @@ class Toggleable:
             self._is_on = True
         except:
             pass
-
 
     def set_off(self):
         try:
