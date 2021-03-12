@@ -1,7 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData">
+  <component name="PublishConfigData" serverName="Chaise">
     <serverData>
+      <paths name="Aril">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="Chaise">
+        <serverdata>
+          <mappings>
+            <mapping deploy="Projects/DeskLightSwitchLite" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="Hoya">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="Kayo">
         <serverdata>
           <mappings>
@@ -9,7 +30,14 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="pi@192.168.0.158:22">
+      <paths name="Ostentation">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="pi@192.168.0.155:22">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />

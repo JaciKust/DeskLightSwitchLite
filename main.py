@@ -14,8 +14,11 @@ from Constants import LeftButton as LeftButtonConstant
 from Constants import RearButton as RearButtonConstant
 from Constants import Color as ColorConstant
 from Constants import LightServer as LightServerConstant
+from Constants import Relay as RelayConstant
 
 from PhysicalButton import PhysicalButton
+from Relay import Relay
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
@@ -26,22 +29,24 @@ left_colors = [ColorConstant.BLACK, ColorConstant.BLACK, ColorConstant.BLACK]
 rear_colors = [ColorConstant.BLACK, ColorConstant.BLACK, ColorConstant.BLACK]
 
 right_button = PhysicalButton(RightButtonConstant.NAME,
-                              RightButtonConstant.RED_PIN,
-                              RightButtonConstant.GREEN_PIN,
-                              RightButtonConstant.BLUE_PIN,
+                              RightButtonConstant.RED_PWM,
+                              RightButtonConstant.GREEN_PWM,
+                              RightButtonConstant.BLUE_PWM,
                               RightButtonConstant.TRIGGER_PIN)
 
 left_button = PhysicalButton(LeftButtonConstant.NAME,
-                             LeftButtonConstant.RED_PIN,
-                             LeftButtonConstant.GREEN_PIN,
-                             LeftButtonConstant.BLUE_PIN,
+                             LeftButtonConstant.RED_PWM,
+                             LeftButtonConstant.GREEN_PWM,
+                             LeftButtonConstant.BLUE_PWM,
                              LeftButtonConstant.TRIGGER_PIN)
 
 rear_button = PhysicalButton(RearButtonConstant.NAME,
-                             RearButtonConstant.RED_PIN,
-                             RearButtonConstant.GREEN_PIN,
-                             RearButtonConstant.BLUE_PIN,
+                             RearButtonConstant.RED_PWM,
+                             RearButtonConstant.GREEN_PWM,
+                             RearButtonConstant.BLUE_PWM,
                              RearButtonConstant.TRIGGER_PIN)
+
+speaker_relay = Relay(RelayConstant.SPEAKER_PIN)
 
 def run_message_server():
     while True:
@@ -56,13 +61,22 @@ def run_message_server():
         global left_colors
         global rear_colors
 
-        right_colors = data['right_colors']
-        left_colors = data['left_colors']
-        rear_colors = data['rear_colors']
+        command = data['action']
 
-        right_button.set_button_color(right_colors[0])
-        left_button.set_button_color(left_colors[0])
-        rear_button.set_button_color(rear_colors[0])
+        if command == 'Button Light':
+            right_colors = data['right_colors']
+            left_colors = data['left_colors']
+            rear_colors = data['rear_colors']
+
+            right_button.set_button_color(right_colors[0])
+            left_button.set_button_color(left_colors[0])
+            rear_button.set_button_color(rear_colors[0])
+
+        elif command == 'Relay State':
+            if data['state'] == 1:
+                speaker_relay.set_on()
+            elif data['state'] == 0:
+                speaker_relay.set_off()
 
         time.sleep(1)
 
@@ -82,6 +96,7 @@ def on_left_button_press(channel):
 
 def on_rear_button_press(channel):
     on_button_press(rear_button, rear_colors)
+
 
 def send_to_light_server(data):
     logging.info("Connecting to server…")
@@ -138,6 +153,9 @@ def on_button_press(button, colors):
             button_press_time, has_long_press_been_set, has_short_press_been_set = \
                 button.handle_button_color(button_start_press_time, has_long_press_been_set, has_short_press_been_set,
                                            colors)
+        if button_press_time < 0.1:
+            button_pressed = False
+            return
         logging.info("{} Button pressed for {} seconds".format(button.name, round(button_press_time, 3)))
 
         send_to_light_server("%s~%f" % (button.name, button_press_time))
@@ -167,30 +185,7 @@ def init():
 
 if __name__ == '__main__':
     print("Hello World")
-    # data = [
-    #     [0,1,2],
-    #     [3,4,5],
-    #     [10, 345,10]
-    # ]
-    # res = json.dumps(data)
-    # print(data)
     init()
     #
     while True:
         time.sleep(1)
-
-    #     try:
-    #         pass
-    #         # for color in ColorConstant.EACH:
-    #         #     right_button.set_button_color(color)
-    #         #     left_button.set_button_color(color)
-    #         #     rear_button.set_button_color(color)
-    #         #     time.sleep(1)
-    #
-    #     except:
-    #         print("Throwing shit from loop.")
-    #         t, v, tb = sys.exc_info()
-    #         logging.error("An error was encountered of type: {}".format(t))
-    #         logging.error("Value: {}".format(v))
-    #         logging.error(str(tb))
-    #         raise
