@@ -47,6 +47,7 @@ rear_button = PhysicalButton(RearButtonConstant.NAME,
                              RearButtonConstant.TRIGGER_PIN)
 
 speaker_relay = Relay(RelayConstant.SPEAKER_PIN)
+power_relay = Relay(RelayConstant.POWER_PIN)
 
 def run_message_server():
     while True:
@@ -55,7 +56,6 @@ def run_message_server():
         incoming_socket.send(b"ack")
         logging.info("Received request: %s" % message)
         data = json.loads(message.decode('utf-8'))
-
 
         global right_colors
         global left_colors
@@ -77,8 +77,9 @@ def run_message_server():
                 speaker_relay.set_on()
             elif data['state'] == 0:
                 speaker_relay.set_off()
-
-        time.sleep(1)
+        elif command == 'Pulse':
+            power_relay.pulse()
+        time.sleep(0.2)
 
 context = zmq.Context()
 incoming_socket = context.socket(zmq.REP)
@@ -159,6 +160,7 @@ def on_button_press(button, colors):
         logging.info("{} Button pressed for {} seconds".format(button.name, round(button_press_time, 3)))
 
         send_to_light_server("%s~%f" % (button.name, button_press_time))
+        wait_for_button_release(button.trigger_pin)
 
     except Exception:
         t, v, tb = sys.exc_info()
@@ -168,6 +170,12 @@ def on_button_press(button, colors):
         raise
     finally:
         button_pressed = False
+
+
+def wait_for_button_release(channel):
+    while GPIO.input(channel) == ButtonConstant.BUTTON_PRESSED_VALUE:
+        time.sleep(0.1)
+
 
 def init():
     logging.info('Starting')

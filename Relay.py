@@ -1,3 +1,5 @@
+import time
+
 from RPi import GPIO
 
 from Toggleable import Toggleable
@@ -11,9 +13,17 @@ class Relay(Toggleable):
         GPIO.setup(self.pin, GPIO.OUT)
 
     def _execute_set_on(self):
-        GPIO.output(self.pin, GPIO.LOW)
+        GPIO.output(self.pin, GPIO.HIGH)
         self.is_on = True
 
     def _execute_set_off(self):
-        GPIO.output(self.pin, GPIO.HIGH)
+        GPIO.output(self.pin, GPIO.LOW)
         self.is_on = False
+
+    def pulse(self):
+        try:
+            self.set_on()
+            time.sleep(0.25)
+        finally:
+            self.set_off()
+        self.set_off()
