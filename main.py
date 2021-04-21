@@ -61,9 +61,9 @@ def run_message_server():
         global left_colors
         global rear_colors
 
-        command = data['action']
+        command = data['name']
 
-        if command == 'Button Light':
+        if command == 'DesButtonColors':
             right_colors = data['right_colors']
             left_colors = data['left_colors']
             rear_colors = data['rear_colors']
@@ -72,7 +72,7 @@ def run_message_server():
             left_button.set_button_color(left_colors[0])
             rear_button.set_button_color(rear_colors[0])
 
-        elif command == 'Relay State':
+        elif command == 'RelayState':
             if data['state'] == 1:
                 speaker_relay.set_on()
             elif data['state'] == 0:
