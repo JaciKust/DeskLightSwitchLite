@@ -23,7 +23,7 @@ class Relay(Toggleable):
     def pulse(self):
         try:
             self.set_on()
-            time.sleep(0.25)
+            time.sleep(0.1)
         finally:
             self.set_off()
         self.set_off()
